@@ -6,13 +6,20 @@
   "author": "BenziLeven <benzakeinjeremy@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/index"
+    "start": "ts-node src/index",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "mocha ./dist/*.spec.js"
   },
   "dependencies": {
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "devDependencies": {
-    "@types/node": "^20.8.9"
+    "@types/chai": "^4.3.9",
+    "@types/mocha": "^10.0.3",
+    "@types/node": "^20.8.9",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
   }
 }
