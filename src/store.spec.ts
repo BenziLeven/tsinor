@@ -152,6 +152,44 @@ describe("Store", () => {
         });
     });
 
+    describe("#get", () => {
+        it("should return the element at that index", () => {
+            const john: Person = { 
+                name: { first: "John", last: "Doe" },
+                age: 30
+            };
+            const jane: Person = { 
+                name: { first: "Jane", last: "Doe" },
+                age: 32
+            };
+            const store = new Store<Person>();
+            store.init("people.json")
+            store.addMulti([john, jane]);
+
+            const result = store.get(2);
+
+            expect(result).to.deep.equal(jane);
+        });
+
+        it("should return undefined if no element math the provided id", () => {
+            const john: Person = { 
+                name: { first: "John", last: "Doe" },
+                age: 30
+            };
+            const jane: Person = { 
+                name: { first: "Jane", last: "Doe" },
+                age: 32
+            };
+            const store = new Store<Person>();
+            store.init("people.json")
+            store.addMulti([john, jane]);
+
+            const result = store.get(4);
+
+            expect(result).to.be.undefined;
+        })
+    })
+
     afterEach(() => {
         mock.restore
     })

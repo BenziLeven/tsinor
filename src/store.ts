@@ -76,6 +76,17 @@ export class Store<T extends object> {
     list(): T[] {
         return this._entries.map(({entry}) => entry)
     }
+
+    get(id: number) {
+        const entryIndex = this._entries.findIndex(element => element._id === id);
+
+        console.log({entryIndex});
+        if(entryIndex === -1) {
+            console.error(`_id: ${id} doesn't exist`);
+        }
+
+        return this._entries[entryIndex]?.entry;
+    }
 }
 
 export class UninitializedStoreError extends Error {
