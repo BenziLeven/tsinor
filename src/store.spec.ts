@@ -38,8 +38,14 @@ describe("Store", () => {
             store.init("existing_file.json");
 
             expect(store.list()).to.deep.equal([{a: 1, b: 2}])
-        })
+        });
+        it("should initialize _id of the store to be higher than all existing elements", () => {
+            const store = new Store<{a: number; b:number}>();
 
+            store.init("existing_file.json");
+
+            expect(store["_id"]).to.equal(2)
+        })
     });
 
     describe("#add", () => {

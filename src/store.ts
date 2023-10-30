@@ -22,8 +22,19 @@ export class Store<T extends object> {
         if (fileExists(this._jsonFilePath)) {
             const fileData = parseJsonFile<T>(this._jsonFilePath);
             this._entries = fileData;
+            this._id = findMaxId(this._entries) + 1;
         } else {
             createNewEmptyJsonFile(this._jsonFilePath)
+        }
+
+        function findMaxId(elements: WithId<T>[]) {
+            let maxId = 1;
+            for (const element of elements) {
+                if(maxId < element._id) {
+                    maxId = element._id
+                }
+            }
+            return maxId;
         }
     }
 
