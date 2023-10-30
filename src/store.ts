@@ -29,6 +29,10 @@ export class Store<T> {
     }
 
     add(entry: T) {
+        if (! this._jsonFileName) {
+            throw new UninitializedStoreError();
+        }
+
         this._entries.push({_id: this._id, entry});
         this._id ++;
     }
@@ -38,8 +42,11 @@ export class Store<T> {
     } 
 
     remove(id: number) {
-        const entryIndex = this._entries.findIndex(element => element._id === id);
+        if (! this._jsonFileName) {
+            throw new UninitializedStoreError();
+        }
 
+        const entryIndex = this._entries.findIndex(element => element._id === id);
         if(entryIndex === -1) {
             console.error(`_id: ${id} doesn't exist`);
         }
@@ -53,5 +60,12 @@ export class Store<T> {
 
     list(): T[] {
         return this._entries.map(({entry}) => entry)
+    }
+}
+
+export class UninitializedStoreError extends Error {
+    constructor() {
+        super("this method must be called after initializing the store with store.init()")
+        this.name = "UninitializedStoreError";
     }
 }
