@@ -22,13 +22,13 @@ export class Store<T> {
         const entryIndex = this._entries.findIndex(element => element._id === id);
 
         if(entryIndex === -1) {
-            throw new Error(`_id: ${id} doesn't exist`);
+            console.error(`_id: ${id} doesn't exist`);
         }
 
-        this._entries.splice(entryIndex);
+        this._entries.splice(entryIndex, 1);
     }
 
-    removeMulti(ids) {
+    removeMulti(ids: number[]) {
         ids.forEach(id => this.remove(id));
     }
 
