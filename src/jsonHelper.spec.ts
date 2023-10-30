@@ -1,6 +1,6 @@
 import * as fs from "fs"
 import mock from "mock-fs"
-import { fileExists, createNewEmptyJsonFile, parseJsonFile } from "./jsonHelper";
+import { fileExists, createNewEmptyJsonFile, parseJsonFile, updateFile } from "./jsonHelper";
 import { expect } from "chai";
 
 
@@ -49,8 +49,17 @@ describe("json Helper", () => {
         it("should return the parsed objects if the file contains data", () => {
             const fileData = parseJsonFile("./test/dir/filled_file.json");
 
-            expect(fileData).to.deep.equal([{ _id: 1, entry: { a: 1, b: 2 } }])
+            expect(fileData).to.deep.equal([{ _id: 1, entry: { a: 1, b: 2 } }]);
         });
+    });
+
+    describe("updateFile", () => {
+        it("should update the file content", () => {
+            updateFile("./test/dir/filled_file.json", [{ _id: 1, entry: { a: 1, b: 2 } }, { _id: 2, entry: { a: 4, b: 5 } }])
+
+            const updatedfileData = parseJsonFile("./test/dir/filled_file.json");
+            expect(updatedfileData).to.deep.equal([{ _id: 1, entry: { a: 1, b: 2 } }, { _id: 2, entry: { a: 4, b: 5 } }])
+        })
     })
 
     afterEach(() => {

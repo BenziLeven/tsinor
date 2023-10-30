@@ -11,7 +11,7 @@ type Person = {
 describe("Store", () => {
     beforeEach(() => {
         mock({
-            "../data": {
+            "./data": {
                 "existing_file.json": `{"data":[\n{ "_id": 1, "entry": { "a": 1, "b": 2 } }\n]}`
             }
         });
@@ -30,7 +30,7 @@ describe("Store", () => {
     
             store.init('people.json');
     
-            expect(fileExists('../data/people.json')).to.be.true;
+            expect(fileExists('./data/people.json')).to.be.true;
         });
         it("should initiate the store with the data contained in the file", () => {
             const store = new Store<{a: number; b:number}>();
