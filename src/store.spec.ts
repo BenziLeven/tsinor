@@ -1,5 +1,7 @@
 import { expect } from "chai";
 import { Store } from "./store";
+import mock from "mock-fs"
+import { fileExists } from "./jsonHelper";
 
 type Person = {
     name: {first: string, last: string},
@@ -7,6 +9,7 @@ type Person = {
 }
 
 describe("Store", () => {
+
     it("should create an empty store", () => {
         const store = new Store<Person>();
 
@@ -78,4 +81,34 @@ describe("Store", () => {
         expect(store.list()).to.not.deep.include(john);
         expect(store.list()).to.deep.equal([]);
     });
+
+    describe("#init", () => {
+        beforeEach(() => {
+            mock({
+                "../data": {
+                    "existing_file.json": `{"data":[\n{ "_id": 1, "entry": { "a": 1, "b": 2 } }\n]}`
+                }
+            });
+        });
+        it("should initiate the store by creating a storage json file when there isn't one already", () => {
+            const store = new Store<Person>();
+    
+            store.init('people.json');
+    
+            expect(fileExists('../data/people.json')).to.be.true;
+        });
+        it("should initiate the store with the data contained in the file", () => {
+            const store = new Store<{a: number; b:number}>();
+
+            store.init("existing_file.json");
+
+            expect(store.list()).to.deep.equal([{a: 1, b: 2}])
+        })
+
+        afterEach(() => {
+            mock.restore
+        })
+    })
+    
+
 });

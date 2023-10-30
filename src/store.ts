@@ -1,12 +1,31 @@
-type WithId<T> = { _id: number, entry: T };
+import { log } from "console";
+import { fileExists, parseJsonFile, createNewEmptyJsonFile } from "./jsonHelper";
+const JSON_STORAGE_DIR_PATH = "../data/"
+
+
+export type WithId<T> = { _id: number, entry: T };
 
 export class Store<T> {
     private _entries: WithId<T>[];
     private _id: number;
+    private _jsonFileName: string;
 
     constructor() {
         this._entries = [];
         this._id = 1;
+        this._jsonFileName = "";
+    }
+
+    init(jsonFileName: string) {
+        this._jsonFileName = jsonFileName;
+        const filePath = `${JSON_STORAGE_DIR_PATH}${this._jsonFileName}`
+
+        if (fileExists(filePath)) {
+            const fileData = parseJsonFile<T>(filePath);
+            this._entries = fileData;
+        } else {
+            createNewEmptyJsonFile(filePath)
+        }
     }
 
     add(entry: T) {
