@@ -20,3 +20,12 @@ export function createNewEmptyJsonFile(jsonFilePath: string) {
     const file = fs.openSync(jsonFilePath, "w");
     fs.writeFileSync(jsonFilePath, `{"data": [\n]}`);
 }
+
+export function updateFile<T extends object>(jsonFilePath: string, newFileData: WithId<T>[]) {
+    const firstLine = `{"data": [`;
+    const lastLine = `]}`;
+    const dataLines = newFileData.map((element) => JSON.stringify(element)).join(",\n");
+    
+    const newFileContent = [firstLine, dataLines, lastLine].join("\n");
+    fs.writeFileSync(jsonFilePath, newFileContent)
+}

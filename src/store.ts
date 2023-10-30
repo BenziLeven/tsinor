@@ -1,48 +1,50 @@
 import { log } from "console";
-import { fileExists, parseJsonFile, createNewEmptyJsonFile } from "./jsonHelper";
-const JSON_STORAGE_DIR_PATH = "../data/"
+import { fileExists, parseJsonFile, createNewEmptyJsonFile, updateFile } from "./jsonHelper";
+const JSON_STORAGE_DIR_PATH = "./data/"
 
 
 export type WithId<T> = { _id: number, entry: T };
 
-export class Store<T> {
+export class Store<T extends object> {
     private _entries: WithId<T>[];
     private _id: number;
-    private _jsonFileName: string;
+    private _jsonFilePath: string;
 
     constructor() {
         this._entries = [];
         this._id = 1;
-        this._jsonFileName = "";
+        this._jsonFilePath = "";
     }
 
     init(jsonFileName: string) {
-        this._jsonFileName = jsonFileName;
-        const filePath = `${JSON_STORAGE_DIR_PATH}${this._jsonFileName}`
+        this._jsonFilePath = `${JSON_STORAGE_DIR_PATH}${jsonFileName}`
 
-        if (fileExists(filePath)) {
-            const fileData = parseJsonFile<T>(filePath);
+        if (fileExists(this._jsonFilePath)) {
+            const fileData = parseJsonFile<T>(this._jsonFilePath);
             this._entries = fileData;
         } else {
-            createNewEmptyJsonFile(filePath)
+            createNewEmptyJsonFile(this._jsonFilePath)
         }
     }
 
-    add(entry: T) {
-        if (! this._jsonFileName) {
+    add(entry: T, { doFileUpdate } = { doFileUpdate: true}) {
+        if (! this._jsonFilePath) {
             throw new UninitializedStoreError();
         }
 
         this._entries.push({_id: this._id, entry});
         this._id ++;
+
+        if(doFileUpdate){ updateFile(this._jsonFilePath, this._entries); }
     }
 
     addMulti(entries: T[]) {
-        entries.forEach(entry => this.add(entry));
+        entries.forEach(entry => this.add(entry, {doFileUpdate: false}));
+        updateFile(this._jsonFilePath, this._entries);
     } 
 
-    remove(id: number) {
-        if (! this._jsonFileName) {
+    remove(id: number, { doFileUpdate } = { doFileUpdate: true}) {
+        if (! this._jsonFilePath) {
             throw new UninitializedStoreError();
         }
 
@@ -52,10 +54,12 @@ export class Store<T> {
         }
 
         this._entries.splice(entryIndex, 1);
+        if(doFileUpdate){ updateFile(this._jsonFilePath, this._entries); }
     }
 
     removeMulti(ids: number[]) {
         ids.forEach(id => this.remove(id));
+        updateFile(this._jsonFilePath, this._entries);
     }
 
     list(): T[] {
