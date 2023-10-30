@@ -1,4 +1,4 @@
-# tsinor
+# Tsinor
 Store Class Assignment
 
 ## Installation guide
